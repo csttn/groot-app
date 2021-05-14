@@ -3,8 +3,15 @@ import { View, StyleSheet, Text, Platform, StatusBar } from "react-native";
 import { Button } from "../components/Button";
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
+import { useNavigation } from "@react-navigation/core";
 
 function Confirmation() {
+  const navigation = useNavigation();
+
+  function handleInit() {
+    navigation.navigate("PlantSelect");
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.emoji}>😁</Text>
@@ -17,7 +24,7 @@ function Confirmation() {
         </Text>
       </View>
 
-      <Button title="Começar" />
+      <Button title="Começar" onPress={handleInit} />
     </View>
   );
 }
