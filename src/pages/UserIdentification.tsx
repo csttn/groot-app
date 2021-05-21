@@ -8,11 +8,14 @@ import {
   Platform,
   View,
   TextInput,
+  Alert,
 } from "react-native";
+
 import fonts from "../styles/fonts";
 import colors from "../styles/colors";
 import { Button } from "../components/Button";
 import { useNavigation } from "@react-navigation/core";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function UserIdentification() {
   const [name, setName] = useState<string>();
@@ -22,8 +25,14 @@ function UserIdentification() {
 
   const navigation = useNavigation();
 
-  function handleSubmit() {
+  async function handleSubmit() {
+    if (!name) {
+      return Alert.alert("Me diz como chamar você 😥");
+    }
+
     navigation.navigate("Confirmation");
+
+    await AsyncStorage.setItem("@groot-app:user", name);
   }
 
   function handleInputBlur() {
