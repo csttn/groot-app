@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   StyleSheet,
@@ -14,6 +14,8 @@ import {
 import fonts from "../styles/fonts";
 import colors from "../styles/colors";
 import { Button } from "../components/Button";
+import { Loading } from "../components/Loading";
+
 import { useNavigation } from "@react-navigation/core";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -23,7 +25,20 @@ function UserIdentification() {
   const [inputIsFocused, setInputIsFocused] = useState(false);
   const [inputIsFiled, setInputIsField] = useState(false);
 
+  const [loading, setLoading] = useState(true);
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    async function handleGetUserInfo() {
+      const user = await AsyncStorage.getItem("@groot-app:user");
+      if (user) {
+        navigation.navigate("PlantSelect");
+      }
+    }
+    handleGetUserInfo();
+    setLoading(false);
+  }, []);
 
   async function handleSubmit() {
     if (!name) {
@@ -32,7 +47,11 @@ function UserIdentification() {
 
     navigation.navigate("Confirmation");
 
-    await AsyncStorage.setItem("@groot-app:user", name);
+    try {
+      await AsyncStorage.setItem("@groot-app:user", name);
+    } catch (error) {
+      Alert.alert("Ocorreu um erro ao salvar o seu nome 😥");
+    }
   }
 
   function handleInputBlur() {
@@ -50,48 +69,54 @@ function UserIdentification() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.form}>
-          {!name ? (
-            <Text style={styles.emoji}>😃</Text>
-          ) : name === "Sabrina" ? (
-            <Text style={styles.emoji}>😍</Text>
-          ) : name === "Sabrina " ? (
-            <Text style={styles.emoji}>😍</Text>
-          ) : name === "Sabrina Martins" ? (
-            <Text style={styles.emoji}>😍</Text>
-          ) : name === "Sabrina Martins " ? (
-            <Text style={styles.emoji}>😍</Text>
-          ) : name === "Amor" ? (
-            <Text style={styles.emoji}>😍</Text>
-          ) : name.length > 20 ? (
-            <Text style={styles.emoji}>😲</Text>
-          ) : (
-            <Text style={styles.emoji}>😄</Text>
-          )}
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <SafeAreaView style={styles.container}>
+          <View style={styles.content}>
+            <View style={styles.form}>
+              {!name ? (
+                <Text style={styles.emoji}>😃</Text>
+              ) : name === "Sabrina" ? (
+                <Text style={styles.emoji}>😍</Text>
+              ) : name === "Sabrina " ? (
+                <Text style={styles.emoji}>😍</Text>
+              ) : name === "Sabrina Martins" ? (
+                <Text style={styles.emoji}>😍</Text>
+              ) : name === "Sabrina Martins " ? (
+                <Text style={styles.emoji}>😍</Text>
+              ) : name === "Amor" ? (
+                <Text style={styles.emoji}>😍</Text>
+              ) : name.length > 20 ? (
+                <Text style={styles.emoji}>😲</Text>
+              ) : (
+                <Text style={styles.emoji}>😄</Text>
+              )}
 
-          <Text style={styles.title}>
-            Como podemos {"\n"}
-            chamar você?
-          </Text>
-          <TextInput
-            style={[
-              styles.input,
-              (inputIsFocused || inputIsFiled) && {
-                borderColor: colors.green,
-              },
-            ]}
-            onBlur={() => handleInputBlur}
-            onFocus={() => handleInputFocus}
-            placeholder="Digite um nome"
-            value={name}
-            onChangeText={handleInputChange}
-          />
-          <Button title="Confirmar" onPress={handleSubmit} />
-        </View>
-      </View>
-    </SafeAreaView>
+              <Text style={styles.title}>
+                Como podemos {"\n"}
+                chamar você?
+              </Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  (inputIsFocused || inputIsFiled) && {
+                    borderColor: colors.green,
+                  },
+                ]}
+                onBlur={() => handleInputBlur}
+                onFocus={() => handleInputFocus}
+                placeholder="Digite um nome"
+                value={name}
+                onChangeText={handleInputChange}
+              />
+              <Button title="Confirmar" onPress={handleSubmit} />
+            </View>
+          </View>
+        </SafeAreaView>
+      )}
+    </>
   );
 }
 

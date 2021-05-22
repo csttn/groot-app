@@ -12,27 +12,16 @@ import { Header } from "../components/Header";
 import { PlantCardPrimary } from "../components/PlantCardPrimary";
 import { Loading } from "../components/Loading";
 
+import { useNavigation } from "@react-navigation/core";
 import { api } from "../services/api";
 
 import colors from "../styles/colors";
 import fonts from "../styles/fonts";
+import { PlantProps } from "../libs/storage";
 
 interface EnvironmentProps {
   key: string;
   title: string;
-}
-
-interface PlantProps {
-  id: number;
-  name: string;
-  about: string;
-  water_tips: string;
-  photo: string;
-  environments: [string];
-  frequency: {
-    times: number;
-    repeat_every: string;
-  };
 }
 
 function PlantSelect() {
@@ -50,6 +39,12 @@ function PlantSelect() {
 
   // estado para marcar o filtro selecioando
   const [environmentSelected, setEnvironmentSelected] = useState("all");
+
+  const navigation = useNavigation();
+
+  function handlePlantSelect(plant: PlantProps) {
+    navigation.navigate("PlantSave", { plant });
+  }
 
   function handleEnvironmentSelected(environment: string) {
     setEnvironmentSelected(environment);
@@ -69,7 +64,6 @@ function PlantSelect() {
     setLoadingMore(true);
     setPage((oldValue) => oldValue + 1);
     fetchPlants();
-    console.log("atualizei as plantas ");
   }
 
   async function fetchPlants() {
@@ -139,6 +133,7 @@ function PlantSelect() {
                     onPress={() => handleEnvironmentSelected(item.key)}
                   />
                 )}
+                keyExtractor={(item) => String(item.key)}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.environmentList}
@@ -149,9 +144,14 @@ function PlantSelect() {
               {/* Listando Plantas */}
               <FlatList
                 data={filteredPlants}
-                renderItem={({ item }) => <PlantCardPrimary data={item} />}
+                renderItem={({ item }) => (
+                  <PlantCardPrimary
+                    data={item}
+                    onPress={() => handlePlantSelect(item)}
+                  />
+                )}
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.name}
+                keyExtractor={(item) => String(item.id)}
                 numColumns={2}
                 // Verificando se o usuario chegou em 10% da página parte inferior
                 onEndReachedThreshold={0.1}
