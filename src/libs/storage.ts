@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { format } from "date-fns";
-
 import * as Notifications from "expo-notifications";
+import { format } from "date-fns";
 
 export interface PlantProps {
   id: string;
@@ -16,11 +15,13 @@ export interface PlantProps {
   };
   hour: string;
   dateTimeNotification: Date;
-  handleRemove: () => void;
 }
 
 export interface StoragePlantProps {
-  [id: string]: { data: PlantProps; notificationId: string };
+  [id: string]: {
+    data: PlantProps;
+    notificationId: string;
+  };
 }
 
 export async function savePlant(plant: PlantProps): Promise<void> {
@@ -32,7 +33,8 @@ export async function savePlant(plant: PlantProps): Promise<void> {
     if (repeat_every === "week") {
       const interval = Math.trunc(7 / times);
       nexTime.setDate(now.getDate() + interval);
-    } else nexTime.setDate(nexTime.getDate() + 1);
+    }
+    // else nexTime.setDate(nexTime.getDate() + 1);
 
     const seconds = Math.abs(
       Math.ceil(now.getTime() - nexTime.getTime()) / 1000
@@ -75,6 +77,7 @@ export async function savePlant(plant: PlantProps): Promise<void> {
     throw new Error(error);
   }
 }
+
 export async function loadPlant(): Promise<PlantProps[]> {
   try {
     const data = await AsyncStorage.getItem("@groot-app:plants");
