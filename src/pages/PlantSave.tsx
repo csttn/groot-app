@@ -15,13 +15,14 @@ import DateTimerPicker, { Event } from "@react-native-community/datetimepicker";
 
 import { useNavigation, useRoute } from "@react-navigation/core";
 
-import { GeneralStatusBarColor } from "../components/StatusBar/GeralStatusBar";
+import { useStatusBar } from "../context/StatusBarColorContext";
+
 import { Button } from "../components/Button";
 
 import { SvgFromUri } from "react-native-svg";
 import { EvilIcons } from "@expo/vector-icons";
 
-import { loadPlants, PlantProps, savePlant } from "../libs/storage";
+import { PlantProps, savePlant } from "../libs/storage";
 
 import waterdrop from "../assets/waterdrop.png";
 
@@ -29,6 +30,7 @@ import fonts from "../styles/fonts";
 import colors from "../styles/colors";
 
 import { format, isBefore } from "date-fns";
+import { useIsFocused } from "@react-navigation/native";
 
 interface Params {
   plant: PlantProps;
@@ -41,6 +43,18 @@ const PlantSave: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { plant } = route.params as Params;
+
+  const { color, handleAlterColor } = useStatusBar();
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      if (color !== colors.shape) {
+        handleAlterColor(colors.shape);
+      }
+    }
+  }, [isFocused]);
 
   function handleNavigateToPlantSelect() {
     navigation.navigate("PlantSelect");
@@ -65,24 +79,31 @@ const PlantSave: React.FC = () => {
     }
   }
 
-  async function handleSavePlant(): Promise<void> {
+  async function handleSave() {
     try {
       await savePlant({
         ...plant,
         dateTimeNotification: selectedDateTime,
       });
-    } catch (error) {
-      Alert.alert("Não foi possível salvar a sua planta 😥");
+
+      navigation.navigate("Confirmation", {
+        title: "Tudo certo",
+        subtitle:
+          "Fique tranquilo que sempre vamos lembrar você de cuidar da sua plantinha com muito cuidado.",
+        buttonTitle: "Muito Obrigado :D",
+        icon: "hug",
+        nextScreen: "MyPlants",
+      });
+    } catch {
+      Alert.alert("Não foi possível salvar. 😢");
     }
   }
 
   return (
-    <>
-      <GeneralStatusBarColor
-        backgroundColor={colors.shape}
-        barStyle="dark-content"
-      />
-
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.container}
+    >
       <View style={styles.plantInfo}>
         <TouchableOpacity
           style={styles.navigateBack}
@@ -135,16 +156,18 @@ const PlantSave: React.FC = () => {
           />
         )}
 
-        <Button title="Cadastrar" onPress={handleSavePlant} />
+        <Button title="Cadastrar" onPress={handleSave} />
       </View>
-    </>
+    </ScrollView>
   );
 };
 
 export { PlantSave };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
   navigateBack: {
     position: "absolute",
     left: 10,

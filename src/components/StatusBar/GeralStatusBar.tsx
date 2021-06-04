@@ -14,11 +14,13 @@ interface GeneralStatusBarColorProps extends StatusBarProps {
 const GeneralStatusBarColor = ({
   backgroundColor,
   ...props
-}: GeneralStatusBarColorProps) => (
-  <View style={[styles.statusBar, { backgroundColor }]}>
-    <StatusBar translucent backgroundColor={backgroundColor} {...props} />
-  </View>
-);
+}: GeneralStatusBarColorProps) => {
+  return (
+    <View style={[styles.statusBar, { backgroundColor }]}>
+      <StatusBar translucent backgroundColor={backgroundColor} {...props} />
+    </View>
+  );
+};
 export { GeneralStatusBarColor };
 
 const styles = StyleSheet.create({

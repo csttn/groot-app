@@ -45,7 +45,14 @@ function UserIdentification() {
       return Alert.alert("Me diz como chamar você 😥");
     }
 
-    navigation.navigate("Confirmation");
+    navigation.navigate("Confirmation", {
+      title: "Prontinho",
+      subTitle:
+        "Agora vamos começar a cuidar das suas plantinhas com muito cuidado.",
+      buttonTitle: "Começar",
+      icon: "smile",
+      nextScreen: "PlantSelect",
+    });
 
     try {
       await AsyncStorage.setItem("@groot-app:user", name);

@@ -10,6 +10,8 @@ import {
   Jost_300Light,
 } from "@expo-google-fonts/jost";
 
+import { StatusBarColorProvider } from "./src/context/StatusBarColorContext";
+
 import { GeneralStatusBarColor } from "./src/components/StatusBar/GeralStatusBar";
 import colors from "./src/styles/colors";
 
@@ -26,13 +28,9 @@ export default function App() {
 
   return (
     <>
-      <GeneralStatusBarColor
-        backgroundColor={colors.white}
-        barStyle="dark-content"
-      />
-      <Routes />
+      <StatusBarColorProvider>
+        <Routes />
+      </StatusBarColorProvider>
     </>
   );
 }
-
-//  3 =  32:56
