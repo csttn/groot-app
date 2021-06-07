@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   image: {
-    height: Dimensions.get("window").width * 0.3,
-    width: Dimensions.get("window").width * 0.3,
+    height: Dimensions.get("window").width * 0.2,
+    width: Dimensions.get("window").width * 0.2,
     borderRadius: 100,
     marginBottom: 13,
   },

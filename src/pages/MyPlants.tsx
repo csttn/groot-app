@@ -29,14 +29,16 @@ const MyPlants: React.FC = () => {
 
       setMyPlants(plantsStorage);
 
-      const nextTime = formatDistance(
-        new Date(plantsStorage[0].dateTimeNotification).getTime(),
-        new Date().getTime(),
-        { locale: pt }
-      );
-      setNextWatered(
-        `Não esqueça de regar a ${plantsStorage[0].name} à ${nextTime}`
-      );
+      if (plantsStorage.length > 0) {
+        const nextTime = formatDistance(
+          new Date(plantsStorage[0].dateTimeNotification).getTime(),
+          new Date().getTime(),
+          { locale: pt }
+        );
+        setNextWatered(
+          `Não esqueça de regar a ${plantsStorage[0].name} à ${nextTime}`
+        );
+      }
     }
 
     loadStorage();

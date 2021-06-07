@@ -18,16 +18,16 @@ import { api } from "../services/api";
 import { Loading } from "../components/Loading";
 import { EnvironmentButton } from "../components/EnvironmentButton";
 
-interface EnviromentProps {
+interface EnvironmentProps {
   key: string;
   title: string;
 }
 
 export function PlantSelect() {
-  const [enviroments, setEnvirtoments] = useState<EnviromentProps[]>([]);
+  const [environments, setEnvironments] = useState<EnvironmentProps[]>([]);
   const [plants, setPlants] = useState<PlantProps[]>([]);
   const [filteredPlants, setFilteredPlants] = useState<PlantProps[]>([]);
-  const [enviromentSelected, setEnviromentSelected] = useState("all");
+  const [environmentSelected, setEnvironmentSelected] = useState("all");
   const [loading, setLoading] = useState(true);
 
   const [page, setPage] = useState(1);
@@ -35,8 +35,8 @@ export function PlantSelect() {
 
   const navigation = useNavigation();
 
-  function handleEnrivomentSelected(environment: string) {
-    setEnviromentSelected(environment);
+  function handleEnvironmentSelected(environment: string) {
+    setEnvironmentSelected(environment);
 
     if (environment == "all") return setFilteredPlants(plants);
 
@@ -79,13 +79,13 @@ export function PlantSelect() {
   }
 
   useEffect(() => {
-    async function fetchEnviroment() {
+    async function fetchEnvironment() {
       const { data } = await api.get(
         "plants_environments?_sort=title&_order=asc"
       );
 
       if (data) {
-        setEnvirtoments([
+        setEnvironments([
           {
             key: "all",
             title: "Todos",
@@ -95,7 +95,7 @@ export function PlantSelect() {
       }
     }
 
-    fetchEnviroment();
+    fetchEnvironment();
   }, []);
 
   useEffect(() => {
@@ -115,18 +115,18 @@ export function PlantSelect() {
 
       <View>
         <FlatList
-          data={enviroments}
+          data={environments}
           keyExtractor={(item) => String(item.key)}
           renderItem={({ item }) => (
             <EnvironmentButton
               title={item.title}
-              active={item.key === enviromentSelected}
-              onPress={() => handleEnrivomentSelected(item.key)}
+              active={item.key === environmentSelected}
+              onPress={() => handleEnvironmentSelected(item.key)}
             />
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.enviromentList}
+          contentContainerStyle={styles.environmentList}
         />
       </View>
 
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: colors.heading,
   },
-  enviromentList: {
+  environmentList: {
     height: 40,
     justifyContent: "center",
     paddingBottom: 5,
